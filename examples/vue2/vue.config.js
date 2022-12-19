@@ -5,6 +5,6 @@ module.exports = defineConfig({
   transpileDependencies: true,
   chainWebpack: config => {
     config.resolve.alias
-      .set("diy-micro-app", path.join(__dirname, '../../src/index.js'))
+      .set('diy-micro-app', path.join(__dirname, '../../src/index.js'))
   },
 })
