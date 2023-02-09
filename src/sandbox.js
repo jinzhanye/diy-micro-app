@@ -1,3 +1,5 @@
+import { EventCenterForMicroApp } from './data'
+
 // 记录addEventListener、removeEventListener原生方法
 const rawWindowAddEventListener = window.addEventListener
 const rawWindowRemoveEventListener = window.removeEventListener
@@ -47,8 +49,10 @@ export default class Sandbox {
   microWindow = {} // // 代理的对象
   injectedKeys = new Set() // 新添加的属性，在卸载时清空
 
-  constructor() {
+  constructor(appName) {
     this.releaseEffect = effect(this.microWindow)
+    this.microWindow.microApp = new EventCenterForMicroApp(appName)
+
     this.proxyWindow = new Proxy(this.microWindow, {
       get: (target, key) => {
         if (Reflect.has(target, key)) {
@@ -103,6 +107,8 @@ export default class Sandbox {
       })
       this.injectedKeys.clear()
       this.releaseEffect()
+      // 清空所有绑定函数
+      this.microWindow.microApp.clearDataListener()
     }
   }
 
