@@ -1,6 +1,8 @@
 import loadHtml from './source'
 import Sandbox from './sandbox'
 
+export const appInstanceMap = new Map()
+
 // 创建微应用
 export default class CreateApp {
   constructor ({ name, url, container }) {
@@ -68,9 +70,10 @@ export default class CreateApp {
     this.status = 'unmount'
     // 清空容器
     this.container = null
-    // destory为true，则删除应用
-    // if (destory) {
-    //   appInstanceMap.delete(this.name)
-    // }
+
+    // destory 为 true，则删除应用
+    if (destory) {
+      appInstanceMap.delete(this.name)
+    }
   }
 }

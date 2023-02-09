@@ -1,4 +1,4 @@
-import CreateApp from './app'
+import CreateApp, { appInstanceMap } from './app'
 
 class MyElement extends HTMLElement {
   // 声明需要监听的属性名，只有这些属性变化时才会触发attributeChangedCallback
@@ -20,11 +20,17 @@ class MyElement extends HTMLElement {
       url: this.url,
       container: this,
     })
+
+    // 记入缓存，用于后续功能
+    appInstanceMap.set(this.name, app)
   }
 
   disconnectedCallback () {
+    const app = appInstanceMap.get(this.name)
+
     // 元素从DOM中删除时执行，此时进行一些卸载操作
     console.log('micro-app has disconnected')
+    app.unmount(this.hasAttribute('destory'))
   }
 
   attributeChangedCallback (attrName, oldVal, newVal) {
