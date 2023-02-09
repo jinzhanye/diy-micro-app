@@ -1,4 +1,5 @@
 import loadHtml from './source'
+import Sandbox from './sandbox'
 
 // 创建微应用
 export default class CreateApp {
@@ -7,6 +8,7 @@ export default class CreateApp {
     this.url = url  // url地址
     this.container = container // micro-app元素
     this.status = 'loading'
+    this.sandbox = new Sandbox(name)
     loadHtml(this)
   }
 
@@ -35,6 +37,7 @@ export default class CreateApp {
    * 资源加载完成后进行渲染
    */
   mount () {
+    this.sandbox.start()
     // 克隆DOM节点
     const cloneHtml = this.source.html.cloneNode(true)
     // 创建一个fragment节点作为模版，这样不会产生冗余的元素
@@ -48,7 +51,7 @@ export default class CreateApp {
 
     // 执行js
     this.source.scripts.forEach((info) => {
-      (0, eval)(info.code) // 间接调用 eval，使用全局作用域
+      (0, eval)(this.sandbox.bindScope(info.code)) // 间接调用 eval，使用全局作用域
     })
 
     // 标记应用为已渲染
@@ -60,6 +63,7 @@ export default class CreateApp {
    * 执行关闭沙箱，清空缓存等操作
    */
   unmount (destory) {
+    this.sandbox.stop()
     // 更新状态
     this.status = 'unmount'
     // 清空容器
